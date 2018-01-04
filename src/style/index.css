@@ -19,3 +19,9 @@ body {
 #app {
   height: 100%;
 }
+
+.layout {
+  padding: 40px 20px;
+  min-height: 100%;
+  width: 100%;
+}

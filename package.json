@@ -26,8 +26,10 @@
   "dependencies": {
     "axios": "^0.17.1",
     "firebase": "^4.8.1",
+    "font-awesome": "^4.7.0",
     "preact": "^8.2.6",
     "preact-compat": "^3.17.0",
+    "preact-fluid": "^0.5.7",
     "preact-router": "^2.5.7",
     "push.js": "^1.0.5",
     "store": "^2.0.12"
