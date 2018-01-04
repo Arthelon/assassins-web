@@ -4,6 +4,7 @@ import firebase from "../firebase";
 
 import Home from "../routes/home";
 import Admin from "../routes/admin";
+import Game from "../routes/game";
 // import Home from 'async!../routes/home';
 // import Admin from 'async!../routes/admin';
 
@@ -22,6 +23,8 @@ export default class App extends Component {
         <Router onChange={this.handleRoute}>
           <Home path="/" />
           <Admin path="/admin" />
+          <Game path="/game" />
+          <Home default />
         </Router>
       </div>
     );
