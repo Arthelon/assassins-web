@@ -1,21 +1,21 @@
 {
-  "name": "assassins-web",
-  "short_name": "assassins-web",
+  "name": "CIS Winter Ball 2017",
+  "short_name": "CIS Winter Ball 2017",
   "start_url": "/",
   "display": "standalone",
   "orientation": "portrait",
   "background_color": "#fff",
-  "theme_color": "#673ab8",
+  "theme_color": "#315168",
   "icons": [
     {
-      "src": "/assets/icons/android-chrome-192x192.png",
+      "src": "/assets/32.png",
       "type": "image/png",
-      "sizes": "192x192"
+      "sizes": "32x32"
     },
     {
-      "src": "/assets/icons/android-chrome-512x512.png",
+      "src": "/assets/64.png",
       "type": "image/png",
-      "sizes": "512x512"
+      "sizes": "64x64"
     }
   ]
 }
