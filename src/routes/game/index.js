@@ -13,13 +13,13 @@ import http from "../../http";
 export default class Game extends Component {
   state = {
     userId: null,
-    targetName: null
+    targetName: null,
+    won: false
   };
 
-  async componentDidMount() {
+  componentDidMount = async () => {
     const user = await getUser();
     if (!user) {
-      console.log(user);
       route("/");
       return;
     }
@@ -30,9 +30,7 @@ export default class Game extends Component {
     this.setState({
       gameStarted
     });
-    console.log(userKey);
     if (!gameStarted && !userKey) {
-      console.log(userKey);
       userKey = database
         .ref()
         .child("users")
@@ -50,8 +48,11 @@ export default class Game extends Component {
         .then(snapshot => {
           return snapshot.val();
         });
+      const nameSnapshot = await database
+        .ref(`users/${user.targetId}/displayName`)
+        .once("value");
       this.setState({
-        targetName: user.targetName
+        targetName: nameSnapshot.val()
       });
     }
     this.setState({
@@ -64,11 +65,18 @@ export default class Game extends Component {
         .once("value");
       // push notif
       const targetName = targetNameSnapshot.val();
+      console.log(targetName);
       this.setState({
         targetName
       });
     });
-  }
+    database.ref(`users/${userKey}/won`).on("value", async snapshot => {
+      const won = snapshot.val();
+      if (won) {
+        this.setState({ won });
+      }
+    });
+  };
 
   handleWithdraw = async () => {
     // show withdraw prompt
@@ -87,7 +95,7 @@ export default class Game extends Component {
   };
 
   render() {
-    const { targetName } = this.state;
+    const { targetName, won } = this.state;
     return (
       <div
         style={{
@@ -96,11 +104,13 @@ export default class Game extends Component {
           alignItems: "center"
         }}
       >
-        {targetName ? (
-          <h1>Your current target is: {targetName}</h1>
-        ) : (
-          <h1>Game has not begun</h1>
-        )}
+        {!won &&
+          (targetName ? (
+            <h1>Your current target is: {targetName}</h1>
+          ) : (
+            <h1>Game has not begun</h1>
+          ))}
+        {won && <h1>Congratulations! You have won!</h1>}
         <button onClick={this.handleWithdraw}>Withdraw</button>
       </div>
     );
