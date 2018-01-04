@@ -1,5 +1,6 @@
 import { h, Component } from "preact";
 import { Router } from "preact-router";
+import firebase from "../firebase";
 
 import Home from "../routes/home";
 import Admin from "../routes/admin";
