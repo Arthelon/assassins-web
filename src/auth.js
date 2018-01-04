@@ -1,6 +1,14 @@
 import firebase from "./firebase";
 import store from "store";
 
+export function setAdmin(flag) {
+  store.set("isAdmin", flag);
+}
+
+export function isAdmin() {
+  return store.get("isAdmin");
+}
+
 export function clearUserKey() {
   store.remove("userKey");
 }
