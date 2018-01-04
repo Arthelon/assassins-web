@@ -1,6 +1,10 @@
 import firebase from "./firebase";
 import store from "store";
 
+export function clearUserKey() {
+  store.remove("userKey");
+}
+
 export function setUserKey(key) {
   store.set("userKey", key);
 }

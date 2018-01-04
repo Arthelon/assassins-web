@@ -16,16 +16,23 @@ export default class Home extends Component {
       route("/game");
     }
     const database = firebase.database();
-    database.ref("gameStarted").on("value", function(snapshot) {
+    database.ref("gameStarted").on("value", snapshot => {
       this.setState({
         gameStarted: snapshot.val()
       });
     });
   }
 
+  componentWillUnmount() {
+    firebase
+      .database()
+      .ref("gameStarted")
+      .off();
+  }
+
   handleClick = async () => {
     try {
-      if (!gameStarted) {
+      if (!this.state.gameStarted) {
         await firebase.auth().signInWithPopup(provider);
         route("/game");
       }

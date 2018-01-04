@@ -1,16 +1,25 @@
 import { h, Component } from "preact";
-import { getUser, getUserKey, setUserKey, logout } from "../../auth";
-import { route } from "preact";
+import {
+  getUser,
+  getUserKey,
+  setUserKey,
+  clearUserKey,
+  logout
+} from "../../auth";
+import { route } from "preact-router";
 import firebase from "../../firebase";
+import http from "../../http";
 
 export default class Game extends Component {
   state = {
+    userId: null,
     targetName: null
   };
 
   async componentDidMount() {
     const user = await getUser();
     if (!user) {
+      console.log(user);
       route("/");
       return;
     }
@@ -21,7 +30,9 @@ export default class Game extends Component {
     this.setState({
       gameStarted
     });
+    console.log(userKey);
     if (!gameStarted && !userKey) {
+      console.log(userKey);
       userKey = database
         .ref()
         .child("users")
@@ -43,11 +54,15 @@ export default class Game extends Component {
         targetName: user.targetName
       });
     }
+    this.setState({
+      userId: userKey
+    });
     database.ref(`users/${userKey}/targetId`).on("value", async snapshot => {
       const targetId = snapshot.val();
       const targetNameSnapshot = await database
         .ref(`users/${targetId}/displayName`)
         .once("value");
+      // push notif
       const targetName = targetNameSnapshot.val();
       this.setState({
         targetName
@@ -55,8 +70,20 @@ export default class Game extends Component {
     });
   }
 
-  handleWithdraw = () => {
+  handleWithdraw = async () => {
     // show withdraw prompt
+    try {
+      clearUserKey();
+      const { status } = await http.post("/withdraw", {
+        userId: this.state.userId,
+        gameStarted: !!this.state.targetName
+      });
+      console.log(`Logout status: ${status}`);
+      await firebase.auth().signOut();
+      route("/");
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   render() {
