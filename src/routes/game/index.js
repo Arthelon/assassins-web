@@ -9,6 +9,9 @@ import {
 import { route } from "preact-router";
 import firebase from "../../firebase";
 import http from "../../http";
+import Push from "push.js";
+
+Push.Permission.request();
 
 export default class Game extends Component {
   state = {
@@ -65,10 +68,20 @@ export default class Game extends Component {
         .once("value");
       // push notif
       const targetName = targetNameSnapshot.val();
-      console.log(targetName);
-      this.setState({
-        targetName
-      });
+      if (targetName) {
+        Push.create("CIS Winter Ball", {
+          body: "You have a new target!",
+          icon: "../../assets/64.png",
+          timeout: 4000,
+          onClick: function() {
+            window.focus();
+            this.close();
+          }
+        });
+        this.setState({
+          targetName
+        });
+      }
     });
     database.ref(`users/${userKey}/won`).on("value", async snapshot => {
       const won = snapshot.val();
