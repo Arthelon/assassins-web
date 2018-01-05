@@ -12,7 +12,7 @@ export default class Home extends Component {
     gameStarted: false
   };
 
-  async componentDidMount() {
+  componentDidMount = async () => {
     const user = await getUser();
     if (user) {
       route("/game");
@@ -23,7 +23,7 @@ export default class Home extends Component {
         gameStarted: snapshot.val()
       });
     });
-  }
+  };
 
   componentWillUnmount() {
     firebase

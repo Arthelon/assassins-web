@@ -13,12 +13,15 @@
   "eslintConfig": {
     "extends": "eslint-config-synacor"
   },
-  "eslintIgnore": ["build/*"],
+  "eslintIgnore": [
+    "build/*"
+  ],
   "devDependencies": {
     "eslint": "^4.9.0",
     "eslint-config-synacor": "^2.0.2",
     "if-env": "^1.0.0",
     "preact-cli": "^2.0.1",
+    "preact-cli-plugin-async": "^1.0.0",
     "preact-cli-plugin-env-vars": "^1.1.0"
   },
   "dependencies": {
