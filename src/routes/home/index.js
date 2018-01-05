@@ -47,7 +47,7 @@ export default class Home extends Component {
   handleClick = async () => {
     try {
       if (this.state.gameState === 1) {
-        await firebase.auth().signInWithPopup(provider);
+        await firebase.auth().signInWithRedirect(provider);
         route("/game");
       }
     } catch (err) {

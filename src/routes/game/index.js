@@ -65,20 +65,39 @@ export default class Game extends Component {
 
     if (!userRecord || !userKey) {
       if (gameState === 1) {
-        user;
-        userKey = database
+        const usersSnapshot = await database
           .ref()
           .child("users")
-          .push().key;
-        setUserKey(userKey);
-        database.ref(`users/${userKey}`).set({
-          id: userKey,
-          displayName: user.displayName
-        });
+          .once("value");
+        const userMap = usersSnapshot.val() || {};
+        let currUser = null;
+        for (let key of Object.keys(userMap)) {
+          if (userMap[key].gid === user.uid) {
+            currUser = userMap[key];
+          }
+        }
+        if (currUser) {
+          setUserKey(currUser.id);
+          userKey = currUser.id;
+        } else {
+          userKey = database
+            .ref()
+            .child("users")
+            .push().key;
+          setUserKey(userKey);
+          database.ref(`users/${userKey}`).set({
+            gid: user.uid,
+            id: userKey,
+            displayName: user.displayName
+          });
+        }
       } else {
         route("/");
       }
     }
+    this.setState({
+      userId: userKey
+    });
     database.ref(`users/${userKey}/targetId`).on("value", async snapshot => {
       const targetId = snapshot.val();
       const targetNameSnapshot = await database
@@ -108,14 +127,14 @@ export default class Game extends Component {
         await logout(this.state.userId, !!this.state.targetName);
       }
     });
-    this.setState({
-      userId: userKey
-    });
   };
 
   componentWillUnmount() {
     this.removeUserListener();
-    database.ref(`users/${userKey}`).off();
+    firebase
+      .database()
+      .ref(`users/${userKey}`)
+      .off();
   }
 
   cancelWithdraw = () => {
