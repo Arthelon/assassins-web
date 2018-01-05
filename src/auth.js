@@ -21,10 +21,6 @@ export function getUserKey() {
   return store.get("userKey");
 }
 
-export function logout() {
-  firebase.logout();
-}
-
 export function getUser() {
   return new Promise((resolve, reject) => {
     firebase.auth().onAuthStateChanged(function(user) {

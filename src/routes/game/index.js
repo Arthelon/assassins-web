@@ -1,11 +1,5 @@
 import { h, Component } from "preact";
-import {
-  getUser,
-  getUserKey,
-  setUserKey,
-  clearUserKey,
-  logout
-} from "../../auth";
+import { getUser, getUserKey, setUserKey, clearUserKey } from "../../auth";
 import { route } from "preact-router";
 import firebase from "../../firebase";
 import http from "../../http";
@@ -15,7 +9,19 @@ import style from "./style";
 
 Push.Permission.request();
 
+async function logout(userId, gameStarted) {
+  clearUserKey();
+  const { status } = await http.post("/withdraw", {
+    userId,
+    gameStarted
+  });
+  console.log(`Logout status: ${status}`);
+  await firebase.auth().signOut();
+}
+
 export default class Game extends Component {
+  removeUserListener = null;
+
   state = {
     userId: null,
     targetName: null,
@@ -24,44 +30,49 @@ export default class Game extends Component {
   };
 
   componentDidMount = async () => {
-    const user = await getUser();
-    if (!user) {
-      route("/");
-      return;
-    }
+    let user = null;
+    this.removeUserListener = firebase
+      .auth()
+      .onAuthStateChanged(function(info) {
+        user = info;
+        if (!user) {
+          route("/");
+        }
+      });
+    let gameState = null;
+    firebase
+      .database()
+      .ref("gameState")
+      .on("value", snapshot => {
+        gameState = snapshot.val();
+        if (gameState === 0) {
+          route("/");
+        }
+      });
     const database = firebase.database();
     let userKey = getUserKey();
-    const snapshot = await database.ref(`gameState`).once("value");
-    const gameState = snapshot.val();
-    if (gameState === 0) {
-      route("/");
-      return;
-    }
+    let userRecord = await database
+      .ref(`users/${userKey}`)
+      .once("value")
+      .then(snapshot => {
+        return snapshot.val();
+      });
 
-    if (gameState === 1 && !userKey) {
-      userKey = database
-        .ref()
-        .child("users")
-        .push().key;
-      setUserKey(userKey);
-      database.ref(`users/${userKey}`).set({
-        id: userKey,
-        displayName: user.displayName
-      });
-    } else {
-      // remember to clear key
-      const user = await database
-        .ref(`users/${userKey}`)
-        .once("value")
-        .then(snapshot => {
-          return snapshot.val();
+    if (!userRecord || !userKey) {
+      if (gameState === 1) {
+        user;
+        userKey = database
+          .ref()
+          .child("users")
+          .push().key;
+        setUserKey(userKey);
+        database.ref(`users/${userKey}`).set({
+          id: userKey,
+          displayName: user.displayName
         });
-      const nameSnapshot = await database
-        .ref(`users/${user.targetId}/displayName`)
-        .once("value");
-      this.setState({
-        targetName: nameSnapshot.val()
-      });
+      } else {
+        route("/");
+      }
     }
     this.setState({
       userId: userKey
@@ -92,9 +103,14 @@ export default class Game extends Component {
       const won = snapshot.val();
       if (won) {
         this.setState({ won });
+        await logout(this.state.userId, !!this.state.targetName);
       }
     });
   };
+
+  componentWillUnmount() {
+    this.removeUserListener();
+  }
 
   cancelWithdraw = () => {
     this.setState({
@@ -110,13 +126,7 @@ export default class Game extends Component {
       });
     } else {
       try {
-        clearUserKey();
-        const { status } = await http.post("/withdraw", {
-          userId: this.state.userId,
-          gameStarted: !!this.state.targetName
-        });
-        console.log(`Logout status: ${status}`);
-        await firebase.auth().signOut();
+        await logout(this.state.userId, !!this.state.targetName);
         route("/");
       } catch (err) {
         console.log(err);

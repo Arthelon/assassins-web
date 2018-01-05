@@ -17,15 +17,18 @@ export default class Home extends Component {
 
   componentDidMount = async () => {
     try {
-      this.userListener = firebase.auth().onAuthStateChanged(function(user) {
-        if (user) {
-          route("/game");
-        }
-      });
+      this.removeUserListener = firebase
+        .auth()
+        .onAuthStateChanged(function(user) {
+          if (user) {
+            route("/game");
+          }
+        });
       const database = firebase.database();
       database.ref("gameState").on("value", snapshot => {
+        const gameState = snapshot.val();
         this.setState({
-          gameState: snapshot.val(),
+          gameState,
           loading: false
         });
       });
@@ -35,6 +38,7 @@ export default class Home extends Component {
   };
 
   componentWillUnmount() {
+    this.removeUserListener();
     firebase
       .database()
       .ref("gameState")
@@ -69,7 +73,7 @@ export default class Home extends Component {
                 primary
                 left={<Icon name="google-plus" size="xsmall" />}
               >
-                Join
+                Sign In
               </Button>
             </div>
           )}
