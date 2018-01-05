@@ -73,6 +73,7 @@ export default class Home extends Component {
               <Button secondary onClick={this.handleGameStop}>
                 Stop Game
               </Button>
+              <h1>Leaderboard</h1>
               <LeaderboardTable />
             </div>
           ) : (
