@@ -1,29 +1,42 @@
 import { h, Component } from "preact";
 import http from "../../http";
 import { setAdmin, isAdmin } from "../../auth";
+import { Grid, Cell, Button, TextField } from "preact-fluid";
 
 export default class Home extends Component {
   state = {
-    authenticated: !!isAdmin()
+    authenticated: !!isAdmin(),
+    inputValue: null,
+    error: false
   };
 
   componentDidMount() {
-    console.log(isAdmin());
     if (isAdmin()) {
-      console.log("IS ADMIN");
       this.setState({
         authenticated: true
       });
     }
   }
 
+  handleInputChange = e => {
+    this.setState({
+      inputValue: e.target.value
+    });
+    console.log(e.target.value);
+  };
+
   authenticate = () => {
-    console.log(this.input);
-    if (this.input.value === process.env.PREACT_APP_ADMIN_PASSWORD) {
+    if (this.state.inputValue === process.env.PREACT_APP_ADMIN_PASSWORD) {
       this.setState({
-        authenticated: true
+        authenticated: true,
+        inputValue: null,
+        error: false
       });
       setAdmin(true);
+    } else {
+      this.setState({
+        error: true
+      });
     }
   };
 
@@ -36,22 +49,41 @@ export default class Home extends Component {
   };
 
   render() {
-    const { authenticated } = this.state;
+    const { authenticated, error, inputValue } = this.state;
 
     return (
-      <div>
-        {authenticated ? (
-          <div>
-            <button onClick={this.handleGameStart}>Start Game</button>
-            <button onClick={this.handleGameStop}>Stop Game</button>
-          </div>
-        ) : (
-          <div>
-            <input ref={ref => (this.input = ref)} />
-            <button onClick={this.authenticate}>Authenticate</button>
-          </div>
-        )}
-      </div>
+      <Grid columns={1}>
+        <Cell center middle>
+          {authenticated ? (
+            <div>
+              <Button primary onClick={this.handleGameStart}>
+                Start Game
+              </Button>
+              <Button secondary onClick={this.handleGameStop}>
+                Stop Game
+              </Button>
+            </div>
+          ) : (
+            <div>
+              <TextField
+                label="Admin Password"
+                ref={ref => (this.input = ref)}
+                placeholder="Admin Password"
+                onChange={this.handleInputChange}
+                value={inputValue}
+                errorText={error && "Invalid Password"}
+              />
+              <Button
+                primary
+                onClick={this.authenticate}
+                style={{ marginTop: "2rem" }}
+              >
+                Submit
+              </Button>
+            </div>
+          )}
+        </Cell>
+      </Grid>
     );
   }
 }

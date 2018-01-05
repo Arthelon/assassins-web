@@ -4,10 +4,8 @@ import firebase from "../firebase";
 import "font-awesome/css/font-awesome.min.css"; // remove me later
 
 import Home from "../routes/home";
-import Admin from "../routes/admin";
 import Game from "../routes/game";
-// import Home from 'async!../routes/home';
-// import Admin from 'async!../routes/admin';
+import Admin from "async!../routes/admin";
 
 export default class App extends Component {
   /** Gets fired when the route changes.
@@ -20,7 +18,7 @@ export default class App extends Component {
 
   render() {
     return (
-      <div id="app">
+      <div id="app" style={{ padding: "40px 20px" }}>
         <Router onChange={this.handleRoute}>
           <Home path="/" />
           <Admin path="/admin" />

@@ -10,6 +10,8 @@ import { route } from "preact-router";
 import firebase from "../../firebase";
 import http from "../../http";
 import Push from "push.js";
+import { Button, Grid, Cell } from "preact-fluid";
+import style from "./style";
 
 Push.Permission.request();
 
@@ -17,7 +19,8 @@ export default class Game extends Component {
   state = {
     userId: null,
     targetName: null,
-    won: false
+    won: false,
+    pendingWithdraw: false
   };
 
   componentDidMount = async () => {
@@ -91,41 +94,70 @@ export default class Game extends Component {
     });
   };
 
+  cancelWithdraw = () => {
+    this.setState({
+      pendingWithdraw: false
+    });
+  };
+
   handleWithdraw = async () => {
-    // show withdraw prompt
-    try {
-      clearUserKey();
-      const { status } = await http.post("/withdraw", {
-        userId: this.state.userId,
-        gameStarted: !!this.state.targetName
+    const { pendingWithdraw } = this.state;
+    if (!pendingWithdraw) {
+      this.setState({
+        pendingWithdraw: true
       });
-      console.log(`Logout status: ${status}`);
-      await firebase.auth().signOut();
-      route("/");
-    } catch (err) {
-      console.log(err);
+    } else {
+      try {
+        clearUserKey();
+        const { status } = await http.post("/withdraw", {
+          userId: this.state.userId,
+          gameStarted: !!this.state.targetName
+        });
+        console.log(`Logout status: ${status}`);
+        await firebase.auth().signOut();
+        route("/");
+      } catch (err) {
+        console.log(err);
+      }
     }
   };
 
   render() {
-    const { targetName, won } = this.state;
+    const { targetName, won, pendingWithdraw } = this.state;
+
     return (
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center"
-        }}
-      >
-        {!won &&
-          (targetName ? (
-            <h1>Your current target is: {targetName}</h1>
-          ) : (
-            <h1>Game has not begun</h1>
-          ))}
-        {won && <h1>Congratulations! You have won!</h1>}
-        <button onClick={this.handleWithdraw}>Withdraw</button>
-      </div>
+      <Grid columns={1}>
+        <Cell center middle>
+          {!won &&
+            (targetName ? (
+              <h2 class={style.title}>Your current target is: {targetName}</h2>
+            ) : (
+              <h2 class={style.title}>Game has not begun</h2>
+            ))}
+          {won && <h1>Congratulations! You have won!</h1>}
+        </Cell>
+        <Cell center middle>
+          <div>
+            {pendingWithdraw ? (
+              <div>
+                <p>Are you sure you want to withdraw?</p>
+                <div>
+                  <Button primary onClick={this.handleWithdraw}>
+                    Yes
+                  </Button>
+                  <Button secondary onClick={this.cancelWithdraw}>
+                    No
+                  </Button>
+                </div>
+              </div>
+            ) : (
+              <Button secondary onClick={this.handleWithdraw}>
+                Withdraw
+              </Button>
+            )}
+          </div>
+        </Cell>
+      </Grid>
     );
   }
 }
