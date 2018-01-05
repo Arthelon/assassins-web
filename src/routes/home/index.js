@@ -69,9 +69,8 @@ export default class Home extends Component {
             <div>
               <Button
                 onClick={this.handleClick}
-                size="large"
                 primary
-                left={<Icon name="google-plus" size="xsmall" />}
+                left={<Icon name="google-plus" />}
               >
                 Sign In
               </Button>

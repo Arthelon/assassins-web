@@ -1,7 +1,7 @@
 import { h, Component } from "preact";
 import http from "../../http";
 import { setAdmin, isAdmin } from "../../auth";
-import { Grid, Cell, Button, TextField } from "preact-fluid";
+import { Grid, Cell, Button, TextField, Icon } from "preact-fluid";
 import LeaderboardTable from "./Leaderboard";
 import firebase from "../../firebase";
 
@@ -49,7 +49,10 @@ export default class Home extends Component {
   };
 
   handleGameStart = () => {
-    http.get("/start");
+    http.get("/start").then(function(res) {
+      if (res.data.status === 200) {
+      }
+    });
   };
 
   handleGameStop = () => {
@@ -64,13 +67,26 @@ export default class Home extends Component {
         <Cell center middle>
           {authenticated ? (
             <div>
-              <Button primary onClick={this.handleGameOpen}>
-                Open Game
+              <Button
+                primary
+                onClick={this.handleGameOpen}
+                style={{ marginRight: "2rem" }}
+                left={<Icon name="pencil-square" />}
+              >
+                Open Signups
               </Button>
-              <Button primary onClick={this.handleGameStart}>
+              <Button
+                primary
+                onClick={this.handleGameStart}
+                left={<Icon name="play-circle" />}
+              >
                 Start Game
               </Button>
-              <Button secondary onClick={this.handleGameStop}>
+              <Button
+                secondary
+                onClick={this.handleGameStop}
+                right={<Icon name="times" />}
+              >
                 Stop Game
               </Button>
               <h1>Leaderboard</h1>

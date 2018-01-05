@@ -4,7 +4,7 @@ import { route } from "preact-router";
 import firebase from "../../firebase";
 import http from "../../http";
 import Push from "push.js";
-import { Button, Grid, Cell } from "preact-fluid";
+import { Button, Grid, Cell, Icon } from "preact-fluid";
 import style from "./style";
 
 Push.Permission.request();
@@ -169,26 +169,39 @@ export default class Game extends Component {
             (targetName ? (
               <h2 class={style.title}>Your current target is: {targetName}</h2>
             ) : (
-              <h2 class={style.title}>Game has not begun</h2>
+              <h2 class={style.title}>Waiting for game to start...</h2>
             ))}
           {won && <h1>Congratulations! You have won!</h1>}
         </Cell>
         <Cell center middle>
-          <div>
+          <div style={{ marginTop: "2rem" }}>
             {pendingWithdraw ? (
               <div>
                 <p>Are you sure you want to withdraw?</p>
                 <div>
-                  <Button primary onClick={this.handleWithdraw}>
+                  <Button
+                    primary
+                    onClick={this.handleWithdraw}
+                    style={{ marginRight: "1.7rem" }}
+                    left={<Icon name="check" />}
+                  >
                     Yes
                   </Button>
-                  <Button secondary onClick={this.cancelWithdraw}>
+                  <Button
+                    secondary
+                    onClick={this.cancelWithdraw}
+                    left={<Icon name="times" />}
+                  >
                     No
                   </Button>
                 </div>
               </div>
             ) : (
-              <Button secondary onClick={this.handleWithdraw}>
+              <Button
+                secondary
+                onClick={this.handleWithdraw}
+                left={<Icon name="sign-out" />}
+              >
                 Withdraw
               </Button>
             )}
