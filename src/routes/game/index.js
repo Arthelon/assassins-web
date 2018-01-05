@@ -133,7 +133,7 @@ export default class Game extends Component {
     this.removeUserListener();
     firebase
       .database()
-      .ref(`users/${userKey}`)
+      .ref(`users/${this.state.userId}`)
       .off();
   }
 

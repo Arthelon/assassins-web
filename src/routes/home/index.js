@@ -65,16 +65,20 @@ export default class Home extends Component {
     return (
       <Grid columns={1}>
         <Cell center middle>
-          {gameState > 0 && (
+          {gameState === 1 && (
             <div>
               <Button
                 onClick={this.handleClick}
+                size="large"
                 primary
                 left={<Icon name="google-plus" size="xsmall" />}
               >
                 Sign In
               </Button>
             </div>
+          )}
+          {gameState === 2 && (
+            <p class={style.title}>Game is currently in progress</p>
           )}
           {gameState === 0 && <p class={style.title}>01 / 06 / 18</p>}
         </Cell>

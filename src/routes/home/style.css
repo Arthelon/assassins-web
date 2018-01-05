@@ -45,3 +45,8 @@
     transform: rotate(360deg);
   }
 }
+
+.disabled {
+  cursor: not-allowed;
+  background-color: rgb(229, 229, 229) !important;
+}

@@ -19,6 +19,7 @@
   "devDependencies": {
     "eslint": "^4.9.0",
     "eslint-config-prettier": "^2.9.0",
+    "eslint-plugin-react": "^7.5.1",
     "if-env": "^1.0.0",
     "preact-cli": "^2.0.1",
     "preact-cli-plugin-async": "^1.0.0",

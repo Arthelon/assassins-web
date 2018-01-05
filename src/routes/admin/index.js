@@ -2,6 +2,7 @@ import { h, Component } from "preact";
 import http from "../../http";
 import { setAdmin, isAdmin } from "../../auth";
 import { Grid, Cell, Button, TextField } from "preact-fluid";
+import LeaderboardTable from "./Leaderboard";
 import firebase from "../../firebase";
 
 export default class Home extends Component {
@@ -23,7 +24,6 @@ export default class Home extends Component {
     this.setState({
       inputValue: e.target.value
     });
-    console.log(e.target.value);
   };
 
   authenticate = () => {
@@ -73,6 +73,7 @@ export default class Home extends Component {
               <Button secondary onClick={this.handleGameStop}>
                 Stop Game
               </Button>
+              <LeaderboardTable />
             </div>
           ) : (
             <div>
