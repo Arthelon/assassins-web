@@ -8,6 +8,9 @@ import { Button, Grid, Cell } from "preact-fluid";
 import style from "./style";
 
 Push.Permission.request();
+Push.config({
+  serviceWorker: "sw.js" // Sets a custom service worker script
+});
 
 async function logout(userId, gameStarted) {
   clearUserKey();
@@ -46,6 +49,8 @@ export default class Game extends Component {
       .on("value", snapshot => {
         gameState = snapshot.val();
         if (gameState === 0) {
+          clearUserKey();
+          firebase.auth().signOut();
           route("/");
         }
       });
@@ -74,18 +79,6 @@ export default class Game extends Component {
         route("/");
       }
     }
-    this.addListeners();
-    this.setState({
-      userId: userKey
-    });
-  };
-
-  componentWillUnmount() {
-    this.removeUserListener();
-    databas.ref(`users/${userKey}`).off();
-  }
-
-  addListeners() {
     database.ref(`users/${userKey}/targetId`).on("value", async snapshot => {
       const targetId = snapshot.val();
       const targetNameSnapshot = await database
@@ -115,6 +108,14 @@ export default class Game extends Component {
         await logout(this.state.userId, !!this.state.targetName);
       }
     });
+    this.setState({
+      userId: userKey
+    });
+  };
+
+  componentWillUnmount() {
+    this.removeUserListener();
+    database.ref(`users/${userKey}`).off();
   }
 
   cancelWithdraw = () => {
