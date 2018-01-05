@@ -31,12 +31,14 @@ export default class Game extends Component {
     }
     const database = firebase.database();
     let userKey = getUserKey();
-    const snapshot = await database.ref(`gameStarted`).once("value");
-    const gameStarted = snapshot.val();
-    this.setState({
-      gameStarted
-    });
-    if (!gameStarted && !userKey) {
+    const snapshot = await database.ref(`gameState`).once("value");
+    const gameState = snapshot.val();
+    if (gameState === 0) {
+      route("/");
+      return;
+    }
+
+    if (gameState === 1 && !userKey) {
       userKey = database
         .ref()
         .child("users")

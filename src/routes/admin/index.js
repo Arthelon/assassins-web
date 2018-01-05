@@ -2,6 +2,7 @@ import { h, Component } from "preact";
 import http from "../../http";
 import { setAdmin, isAdmin } from "../../auth";
 import { Grid, Cell, Button, TextField } from "preact-fluid";
+import firebase from "../../firebase";
 
 export default class Home extends Component {
   state = {
@@ -40,6 +41,13 @@ export default class Home extends Component {
     }
   };
 
+  handleGameOpen = () => {
+    firebase
+      .database()
+      .ref("gameState")
+      .set(1);
+  };
+
   handleGameStart = () => {
     http.get("/start");
   };
@@ -56,6 +64,9 @@ export default class Home extends Component {
         <Cell center middle>
           {authenticated ? (
             <div>
+              <Button primary onClick={this.handleGameOpen}>
+                Open Game
+              </Button>
               <Button primary onClick={this.handleGameStart}>
                 Start Game
               </Button>

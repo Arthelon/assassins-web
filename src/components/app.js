@@ -1,6 +1,5 @@
 import { h, Component } from "preact";
 import { Router } from "preact-router";
-import firebase from "../firebase";
 import "font-awesome/css/font-awesome.min.css"; // remove me later
 
 import Home from "../routes/home";
