@@ -1,5 +1,5 @@
 import { h, Component } from "preact";
-import { getUser, getUserKey, setUserKey, clearUserKey } from "../../auth";
+import { getUserKey, setUserKey, clearUserKey } from "../../auth";
 import { route } from "preact-router";
 import firebase from "../../firebase";
 import http from "../../http";
@@ -74,9 +74,18 @@ export default class Game extends Component {
         route("/");
       }
     }
+    this.addListeners();
     this.setState({
       userId: userKey
     });
+  };
+
+  componentWillUnmount() {
+    this.removeUserListener();
+    databas.ref(`users/${userKey}`).off();
+  }
+
+  addListeners() {
     database.ref(`users/${userKey}/targetId`).on("value", async snapshot => {
       const targetId = snapshot.val();
       const targetNameSnapshot = await database
@@ -106,10 +115,6 @@ export default class Game extends Component {
         await logout(this.state.userId, !!this.state.targetName);
       }
     });
-  };
-
-  componentWillUnmount() {
-    this.removeUserListener();
   }
 
   cancelWithdraw = () => {

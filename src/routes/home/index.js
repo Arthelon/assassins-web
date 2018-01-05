@@ -1,6 +1,5 @@
 import { h, Component } from "preact";
 import { route } from "preact-router";
-import { getUser } from "../../auth";
 import firebase from "../../firebase";
 import style from "./style";
 import { Grid, Cell, Button, Icon } from "preact-fluid";

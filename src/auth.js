@@ -20,15 +20,3 @@ export function setUserKey(key) {
 export function getUserKey() {
   return store.get("userKey");
 }
-
-export function getUser() {
-  return new Promise((resolve, reject) => {
-    firebase.auth().onAuthStateChanged(function(user) {
-      if (user) {
-        resolve(user);
-      } else {
-        resolve(null);
-      }
-    });
-  });
-}
