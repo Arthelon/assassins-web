@@ -95,7 +95,7 @@ export default class Home extends Component {
               <Button
                 secondary
                 onClick={this.handleGameStop}
-                right={<Icon name="times" />}
+                right={<Icon name="times-circle" />}
               >
                 Stop Game
               </Button>

@@ -12,11 +12,12 @@ Push.config({
   serviceWorker: "sw.js" // Sets a custom service worker script
 });
 
-async function logout(userId, gameStarted) {
+async function logout(userId, gameStarted, gameEnded) {
   clearUserKey();
   const { status } = await http.post("/withdraw", {
     userId,
-    gameStarted
+    gameStarted,
+    gameEnded
   });
   console.log(`Logout status: ${status}`);
   await firebase.auth().signOut();
@@ -124,7 +125,7 @@ export default class Game extends Component {
       const won = snapshot.val();
       if (won) {
         this.setState({ won });
-        await logout(this.state.userId, !!this.state.targetName);
+        await logout(this.state.userId, !!this.state.targetName, true);
       }
     });
   };
@@ -174,7 +175,7 @@ export default class Game extends Component {
           {won && <h1>Congratulations! You have won!</h1>}
         </Cell>
         <Cell center middle>
-          <div style={{ marginTop: "2rem" }}>
+          <div style={{ marginTop: "1rem" }}>
             {pendingWithdraw ? (
               <div>
                 <p>Are you sure you want to withdraw?</p>
