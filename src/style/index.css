@@ -5,11 +5,17 @@ body {
   padding: 0;
   margin: 0;
   background: #315168;
-  font-family: "Helvetica Neue", arial, sans-serif;
-  font-weight: 400;
+  font-family: "Avenir", "Futura", "Helvetica Neue", "Helvetica", sans-serif;
+  font-weight: 100;
+  text-transform: uppercase;
+  letter-spacing: 2px;
   color: #d7b88e;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+h2 {
+  font-weight: 100;
 }
 
 * {
@@ -27,6 +33,5 @@ body {
 }
 
 .title {
-  font-size: 4rem;
-  margin-top: 0;
+  font-size: 1rem;
 }

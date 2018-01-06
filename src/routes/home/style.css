@@ -1,9 +1,8 @@
 .title {
   margin-top: 14rem;
-  font-size: 4rem;
+  font-size: 2rem;
   font-family: "Playfair Display", serif;
 }
-
 .loader,
 .loader:after {
   border-radius: 50%;

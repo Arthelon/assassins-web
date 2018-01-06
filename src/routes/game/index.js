@@ -180,19 +180,19 @@ export default class Game extends Component {
                 <p>Are you sure you want to withdraw?</p>
                 <div>
                   <Button
-                    primary
-                    onClick={this.handleWithdraw}
-                    style={{ marginRight: "1.7rem" }}
-                    left={<Icon name="check" />}
-                  >
-                    Yes
-                  </Button>
-                  <Button
                     secondary
                     onClick={this.cancelWithdraw}
                     left={<Icon name="times" />}
+                    style={{ marginRight: "1.7rem" }}
                   >
                     No
+                  </Button>
+                  <Button
+                    primary
+                    onClick={this.handleWithdraw}
+                    left={<Icon name="check" />}
+                  >
+                    Yes
                   </Button>
                 </div>
               </div>

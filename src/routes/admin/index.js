@@ -5,11 +5,14 @@ import { Grid, Cell, Button, TextField, Icon } from "preact-fluid";
 import LeaderboardTable from "./Leaderboard";
 import firebase from "../../firebase";
 
+const stateMap = ["Closed", "Signups Open", "In Progress"];
+
 export default class Home extends Component {
   state = {
     authenticated: !!isAdmin(),
     inputValue: null,
-    error: false
+    error: false,
+    gameState: 0
   };
 
   componentDidMount() {
@@ -18,6 +21,15 @@ export default class Home extends Component {
         authenticated: true
       });
     }
+    firebase
+      .database()
+      .ref("gameState")
+      .on("value", snapshot => {
+        console.log(snapshot.val());
+        this.setState({
+          gameState: snapshot.val()
+        });
+      });
   }
 
   handleInputChange = e => {
@@ -49,10 +61,7 @@ export default class Home extends Component {
   };
 
   handleGameStart = () => {
-    http.get("/start").then(function(res) {
-      if (res.data.status === 200) {
-      }
-    });
+    http.get("/start");
   };
 
   handleGameStop = () => {
@@ -60,13 +69,14 @@ export default class Home extends Component {
   };
 
   render() {
-    const { authenticated, error, inputValue } = this.state;
+    const { authenticated, error, inputValue, gameState } = this.state;
 
     return (
       <Grid columns={1}>
         <Cell center middle>
           {authenticated ? (
             <div>
+              <h1>Game State: {stateMap[gameState]}</h1>
               <Button
                 primary
                 onClick={this.handleGameOpen}
