@@ -13,8 +13,7 @@ const columns = [
   },
   {
     Header: "Is Alive",
-    accesor: "withdrawn",
-    id: "withdrawn",
+    accessor: "withdrawn",
     Cell: ({ value }) => (value ? "No" : "Yes"),
     filterMethod: (filter, row) => {
       if (filter.value === "all") {

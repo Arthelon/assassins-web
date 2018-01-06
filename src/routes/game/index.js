@@ -29,7 +29,6 @@ export default class Game extends Component {
   state = {
     userId: null,
     targetName: null,
-    won: false,
     pendingWithdraw: false
   };
 
@@ -124,8 +123,8 @@ export default class Game extends Component {
     database.ref(`users/${userKey}/won`).on("value", async snapshot => {
       const won = snapshot.val();
       if (won) {
-        this.setState({ won });
-        await logout(this.state.userId, !!this.state.targetName, true);
+        clearUserKey();
+        await firebase.auth().signOut();
       }
     });
   };
@@ -161,18 +160,16 @@ export default class Game extends Component {
   };
 
   render() {
-    const { targetName, won, pendingWithdraw } = this.state;
+    const { targetName, pendingWithdraw } = this.state;
 
     return (
       <Grid columns={1}>
         <Cell center middle>
-          {!won &&
-            (targetName ? (
-              <h2 class={style.title}>Your current target is: {targetName}</h2>
-            ) : (
-              <h2 class={style.title}>Waiting for game to start...</h2>
-            ))}
-          {won && <h1>Congratulations! You have won!</h1>}
+          {targetName ? (
+            <h2 class={style.title}>Your current target is: {targetName}</h2>
+          ) : (
+            <h2 class={style.title}>Waiting for game to start...</h2>
+          )}
         </Cell>
         <Cell center middle>
           <div style={{ marginTop: "1rem" }}>

@@ -11,7 +11,8 @@ export default class Home extends Component {
 
   state = {
     loading: true,
-    gameState: 0
+    gameState: 0,
+    won: false
   };
 
   componentDidMount = async () => {
